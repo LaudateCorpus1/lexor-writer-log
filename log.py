@@ -9,7 +9,7 @@ from lexor import init
 from lexor.core.writer import NodeWriter
 
 INFO = init(
-    version=(0, 0, 2, 'final', 0),
+    version=(0, 0, 2, 'final', 1),
     lang='lexor',
     type='writer',
     description='Display messages from parsed/converted documents.',
@@ -22,6 +22,7 @@ INFO = init(
 DEFAULTS = {
     'explanation': 'off',
     'module': 'off',
+    'nodeid': 'off',
 }
 
 
@@ -43,10 +44,13 @@ class MsgNW(NodeWriter):
         name = ''
         if self.writer.defaults['module'] in ['true', 'on']:
             name = '[{name}]'
-        location = '{line}:{column:2}'
+        location = '{line}:{column:2}:'
         if 'node_id' in node:
-            location = '0x%x' % node['node_id']
-        msg = '{fname}:%s: %s[{code}] {msg}\n' % (location, name)
+            if self.writer.defaults['nodeid'] in ['true', 'on']:
+                location = '0x%x:' % node['node_id']
+            else:
+                location = ''
+        msg = '{fname}:%s %s[{code}] {msg}\n' % (location, name)
         msg = msg.format(fname=node['uri'],
                          line=pos[0], column=pos[1],
                          name=node['module'],
