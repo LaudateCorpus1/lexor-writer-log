@@ -9,7 +9,7 @@ from lexor import init
 from lexor.core.writer import NodeWriter
 
 INFO = init(
-    version=(0, 0, 2, 'final', 1),
+    version=(0, 0, 2, 'final', 2),
     lang='lexor',
     type='writer',
     description='Display messages from parsed/converted documents.',
@@ -29,13 +29,10 @@ DEFAULTS = {
 class MsgNW(NodeWriter):
     """Display messages stored in the nodes. """
 
-    def __init__(self, writer):
-        NodeWriter.__init__(self, writer)
-        self.log = writer.root
-
     def start(self, node):
-        mod = self.log.modules[node['module']]
-        exp = self.log.explanation[node['module']]
+        log = self.writer.root
+        mod = log.modules[node['module']]
+        exp = log.explanation[node['module']]
         mod_msg = mod.MSG[node['code']]
         code_index = exp.get(node['code'], None)
         pos = [0, 0]
