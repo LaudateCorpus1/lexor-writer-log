@@ -31,6 +31,10 @@ class MsgNW(NodeWriter):
 
     def start(self, node):
         log = self.writer.root
+        try:
+            ele = node['node']
+        except Exception:
+            pass
         mod = log.modules[node['module']]
         exp = log.explanation[node['module']]
         mod_msg = mod.MSG[node['code']]
@@ -38,6 +42,8 @@ class MsgNW(NodeWriter):
         pos = [0, 0]
         if 'position' in node:
             pos = node['position']
+        elif ele.node_position != (0, 0):
+            pos = ele.node_position
         name = ''
         if self.writer.defaults['module'] in ['true', 'on']:
             name = '[{name}]'
@@ -45,7 +51,7 @@ class MsgNW(NodeWriter):
         if 'node_id' in node:
             if self.writer.defaults['nodeid'] in ['true', 'on']:
                 location = '0x%x:' % node['node_id']
-            else:
+            elif pos == (0, 0):
                 location = ''
         msg = '{fname}:%s %s[{code}] {msg}\n' % (location, name)
         msg = msg.format(fname=node['uri'],
